@@ -1,21 +1,19 @@
 require('dotenv').config();
-
-const accountSid = process.env.TWILIO_ACCOUNT_SID; 
-const authToken = process.env.TWILIO_AUTH_TOKEN;  
-
+const accountSid = process.env.TWILIO_ACCOUNT_SID;
+const authToken = process.env.TWILIO_AUTH_TOKEN;
 const client = require('twilio')(accountSid, authToken);
 
-const sendSMS = async (body) => {
+const sendSMS = async (body, toNumber) => {
     try {
         const message = await client.messages.create({
-            from: '+13073367092',  
-            to: '+919307103123',  
-            body: body            
+            from: '+13073367092', // Your Twilio number
+            to: toNumber,         // The number to send the message to
+            body: body,
         });
         console.log('Message Sent! SID:', message.sid);
     } catch (error) {
-        console.error('Error Sending Message:', error.message);
+        throw new Error(error.message);  // This will be caught in the route
     }
 };
 
-sendSMS('Msg Sent by Node.js');
+module.exports = sendSMS;
